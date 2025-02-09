@@ -16,7 +16,7 @@ steps:
 
   - script: |
       echo "Cleaning node_modules and npm cache"
-      rm -rf node_modules
+      rmdir /s /q node_modules
       npm cache clean --force
     displayName: 'Clean node_modules and npm cache'
 
@@ -41,3 +41,9 @@ steps:
       testResultsFiles: '**/test-results/*.xml'
       testRunTitle: 'Playwright Test Results'
     condition: always()  # Ensures results are published even if tests fail
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: 'playwright-report'
+      artifactName: 'Playwright Report'
+    condition: always()  # Publish report even if tests fail
