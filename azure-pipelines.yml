@@ -20,17 +20,23 @@ steps:
   - script: npx playwright install --with-deps
     displayName: 'Install Playwright Browsers'
 
-  - script: npx playwright test
-    displayName: 'Run Playwright Tests'
+  - script: npx playwright test tests/TestCase1.spec.ts
+    displayName: 'Run TestCase1'
+
+  - script: npx playwright test tests/TestCase2.spec.ts
+    displayName: 'Run TestCase2'
+
+  - script: npx playwright test tests/TestCase3.spec.ts
+    displayName: 'Run TestCase3'
 
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/test-results/*.xml'
       testRunTitle: 'Playwright Test Results'
-    condition: always()  # Ensures results are published even if tests fail
+    condition: always()
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: 'playwright-report'
       artifactName: 'Playwright Report'
-    condition: always()  # Publish report even if tests fail
+    condition: always()
