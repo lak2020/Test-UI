@@ -4,37 +4,30 @@ trigger:
       - master
 
 pool:
-  name: Default
+  name: Default 
 
 steps:
   - checkout: self
 
-  # Set up Node.js version 18.x (which is required by Playwright)
   - task: NodeTool@1
     inputs:
       versionSpec: '18.x'
     displayName: 'Setup Node.js'
 
-  # Verify Node.js version to make sure it's 18.x or higher
-  - script: node -v
-    displayName: 'Check Node.js Version'
-
-  # Clean node_modules and npm cache to avoid dependency issues
+  # Clean node_modules and npm cache
   - script: |
       echo "Cleaning node_modules and npm cache"
-      rmdir /s /q node_modules  # Remove existing node_modules
-      npm cache clean --force   # Clean npm cache
+      rmdir /s /q node_modules  # Remove node_modules folder
+      npm cache clean --force   # Clean npm cache with --force flag
     displayName: 'Clean node_modules and npm cache'
 
-  # Reinstall dependencies
   - script: npm install
     displayName: 'Install Dependencies'
 
-  # Install Playwright Browsers (ensure Playwright installs properly)
   - script: npx playwright install --with-deps
     displayName: 'Install Playwright Browsers'
 
-  # Run individual test cases with Playwright
+  # Run individual test cases
   - script: npx playwright test tests/TestCase1.spec.ts
     displayName: 'Run TestCase1'
 
@@ -44,16 +37,14 @@ steps:
   - script: npx playwright test tests/TestCase3.spec.ts
     displayName: 'Run TestCase3'
 
-  # Publish test results to Azure DevOps (even if tests fail)
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/test-results/*.xml'
       testRunTitle: 'Playwright Test Results'
-    condition: always()
+    condition: always()  # Ensures results are published even if tests fail
 
-  # Publish Playwright report to Azure DevOps (even if tests fail)
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: 'playwright-report'
       artifactName: 'Playwright Report'
-    condition: always()
+    condition: always()  # Publish report even if tests fail
