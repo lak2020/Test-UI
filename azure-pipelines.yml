@@ -21,13 +21,13 @@ steps:
     displayName: 'Install Playwright Browsers'
 
   - script: npx playwright test tests/TestCase1.spec.ts
-    displayName: 'Run TestCase1 in Headless Mode'
+    displayName: 'Run TestCase1'
 
   - script: npx playwright test tests/TestCase2.spec.ts
-    displayName: 'Run TestCase2 in Headless Mode'
+    displayName: 'Run TestCase2'
 
   - script: npx playwright test tests/TestCase3.spec.ts
-    displayName: 'Run TestCase3 in Headless Mode'
+    displayName: 'Run TestCase3'
 
   - task: PublishTestResults@2
     inputs:
