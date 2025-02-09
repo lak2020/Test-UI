@@ -1,50 +1,37 @@
 trigger:
-  branches:
-    include:
-      - master
+- main
 
 pool:
-  name: Default 
+  vmImage: 'windows-latest'
 
 steps:
-  - checkout: self
+# Use Node.js version 16 (you can adjust this version)
+- task: UseNode@2
+  inputs:
+    versionSpec: '16.x'  # You can specify the version as needed
+    addToPath: true
 
-  - task: NodeTool@1
-    inputs:
-      versionSpec: '18.x'
-    displayName: 'Setup Node.js'
+# Install dependencies and clean npm cache
+- script: |
+    echo "Cleaning node_modules and npm cache"
+    rmdir /s /q node_modules   # Removes node_modules folder for a clean slate
+    npm cache clean --force    # Correctly clears npm cache with --force
+  displayName: 'Clean node_modules and npm cache'
 
-  # Clean node_modules and npm cache
-  - script: |
-      echo "Cleaning node_modules and npm cache"
-      rmdir /s /q node_modules  # Remove node_modules folder
-      npm cache clean --force   # Clean npm cache with --force flag
-    displayName: 'Clean node_modules and npm cache'
+# Install npm dependencies
+- script: |
+    npm install
+  displayName: 'Install Dependencies'
 
-  - script: npm install
-    displayName: 'Install Dependencies'
+# Install Playwright Browsers
+- script: |
+    npx playwright install --with-deps
+  displayName: 'Install Playwright Browsers'
 
-  - script: npx playwright install --with-deps
-    displayName: 'Install Playwright Browsers'
+# Run tests or other tasks
+- script: |
+    # Replace with your test commands, such as running Playwright tests
+    npm test
+  displayName: 'Run Tests'
 
-  # Run individual test cases
-  - script: npx playwright test tests/TestCase1.spec.ts
-    displayName: 'Run TestCase1'
-
-  - script: npx playwright test tests/TestCase2.spec.ts
-    displayName: 'Run TestCase2'
-
-  - script: npx playwright test tests/TestCase3.spec.ts
-    displayName: 'Run TestCase3'
-
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFiles: '**/test-results/*.xml'
-      testRunTitle: 'Playwright Test Results'
-    condition: always()  # Ensures results are published even if tests fail
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: 'playwright-report'
-      artifactName: 'Playwright Report'
-    condition: always()  # Publish report even if tests fail
+# Additional steps like deployment or further build tasks go here
