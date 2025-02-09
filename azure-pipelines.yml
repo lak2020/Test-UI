@@ -52,9 +52,6 @@ steps:
       pathToPublish: 'playwright-report'
       artifactName: 'Playwright Report'
     condition: always()  # Publish report even if tests fail
-
-
-
 #################### Single Test run Commented ######################
 
 # trigger:
