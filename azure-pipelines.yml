@@ -20,28 +20,25 @@ steps:
   - script: npx playwright install --with-deps
     displayName: 'Install Playwright Browsers'
 
-  - script: npx playwright test tests/TestCase1.spec.ts
-    displayName: 'Run TestCase1'
+  - script: npx playwright test tests/TestCase1.spec.ts --headed=false
+    displayName: 'Run TestCase1 in Headless Mode'
 
-  - script: npx playwright test tests/TestCase2.spec.ts
-    displayName: 'Run TestCase2'
+  - script: npx playwright test tests/TestCase2.spec.ts --headed=false
+    displayName: 'Run TestCase2 in Headless Mode'
 
-  - script: npx playwright test tests/TestCase3.spec.ts
-    displayName: 'Run TestCase3'
-
-  - script: |
-      echo "Checking if playwright-report exists"
-      if [ ! -d "playwright-report" ]; then
-        echo "playwright-report not found, creating it"
-        mkdir playwright-report
-      fi
-    displayName: 'Ensure Playwright Report Directory Exists'
+  - script: npx playwright test tests/TestCase3.spec.ts --headed=false
+    displayName: 'Run TestCase3 in Headless Mode'
 
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/test-results/*.xml'
       testRunTitle: 'Playwright Test Results'
     condition: always()
+
+  # Ensure Playwright Report Directory Exists
+  - script: |
+      if not exist playwright-report mkdir playwright-report
+    displayName: 'Ensure Playwright Report Directory Exists'
 
   - task: PublishBuildArtifacts@1
     inputs:
