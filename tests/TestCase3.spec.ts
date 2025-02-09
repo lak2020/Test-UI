@@ -22,7 +22,7 @@ test('Test Case 3: Search TV, add to cart, proceed to checkout', async ({ page }
            
          //Add 1st and 2nd TV to the cart
     await homePage.addToCart([1]); // Add product 1
-    await homePage.addToCart([2]); // Add product 2
+    await homePage.addToCart([4]); // Add product 2
 
          //Navigate to cart
     await cartPage.viewMiniCart();
