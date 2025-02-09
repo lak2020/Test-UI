@@ -29,6 +29,14 @@ steps:
   - script: npx playwright test tests/TestCase3.spec.ts
     displayName: 'Run TestCase3'
 
+  - script: |
+      echo "Checking if playwright-report exists"
+      if [ ! -d "playwright-report" ]; then
+        echo "playwright-report not found, creating it"
+        mkdir playwright-report
+      fi
+    displayName: 'Ensure Playwright Report Directory Exists'
+
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/test-results/*.xml'
