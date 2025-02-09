@@ -9,23 +9,14 @@ pool:
 steps:
   - checkout: self
 
-  # Ensure latest Node.js is installed
   - task: NodeTool@1
     inputs:
       versionSpec: '18.x'
     displayName: 'Setup Node.js'
 
-  # Verify Node.js version
-  - script: node -v
-    displayName: 'Check Node.js Version'
+  - script: npm install
+    displayName: 'Install Dependencies'
 
-  # Clean old dependencies and install fresh packages
-  - script: |
-      rm -rf node_modules package-lock.json
-      npm install
-    displayName: 'Clean & Install Dependencies'
-
-  # Install Playwright Browsers
   - script: npx playwright install --with-deps
     displayName: 'Install Playwright Browsers'
 
@@ -39,14 +30,12 @@ steps:
   - script: npx playwright test tests/TestCase3.spec.ts
     displayName: 'Run TestCase3'
 
-  # Publish test results
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/test-results/*.xml'
       testRunTitle: 'Playwright Test Results'
     condition: always()  # Ensures results are published even if tests fail
 
-  # Publish Playwright report as an artifact
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: 'playwright-report'
