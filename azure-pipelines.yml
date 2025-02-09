@@ -4,7 +4,7 @@ trigger:
       - master
 
 pool:
-  name: Default 
+  name: Default
 
 steps:
   - checkout: self
@@ -13,6 +13,12 @@ steps:
     inputs:
       versionSpec: '18.x'
     displayName: 'Setup Node.js'
+
+  - script: |
+      echo "Cleaning node_modules and npm cache"
+      rm -rf node_modules
+      npm cache clean --force
+    displayName: 'Clean node_modules and npm cache'
 
   - script: npm install
     displayName: 'Install Dependencies'
@@ -35,9 +41,3 @@ steps:
       testResultsFiles: '**/test-results/*.xml'
       testRunTitle: 'Playwright Test Results'
     condition: always()  # Ensures results are published even if tests fail
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: 'playwright-report'
-      artifactName: 'Playwright Report'
-    condition: always()  # Publish report even if tests fail
